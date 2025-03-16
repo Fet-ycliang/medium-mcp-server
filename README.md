@@ -44,7 +44,7 @@ MEDIUM_CLIENT_SECRET=your_client_secret
 MEDIUM_CALLBACK_URL=http://localhost:3000/callback
 ```
 
-2. Register your application at [Medium's Developer Portal](https://medium.com/creators/creator-tools)
+2. Register your application at [Medium's Developer Portal](https://mediumapi.com/)
 
 ## 🔍 Tool Capabilities
 
