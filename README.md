@@ -35,5 +35,3 @@ cd medium-mcp-server
 
 # Install dependencies
 npm install
-# or
-yarn install
