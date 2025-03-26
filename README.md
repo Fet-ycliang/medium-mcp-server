@@ -1,4 +1,3 @@
-
 # Medium MCP Server
 
 ## Overview
@@ -20,10 +19,68 @@ Want to understand the full story behind Medium MCP? Check out the comprehensive
 - Advanced Content Parsing
 
 ## Getting Started
-(Add installation and usage instructions here)
+
+### Prerequisites
+- Node.js (v16 or later)
+- npm or yarn
+- Medium API credentials
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/Dishant27/medium-mcp-server.git
+
+# Navigate to the project directory
+cd medium-mcp-server
+
+# Install dependencies
+npm install
+# or
+yarn install
+```
+
+### Configuration
+Create a `.env` file in the project root with the following variables:
+```
+MEDIUM_CLIENT_ID=your_medium_client_id
+MEDIUM_CLIENT_SECRET=your_medium_client_secret
+MCP_SECRET_KEY=your_mcp_secret_key
+```
+
+### Running the Server
+```bash
+# Development mode
+npm run dev
+# or
+yarn dev
+
+# Production build
+npm run build
+npm start
+# or
+yarn build
+yarn start
+```
 
 ## Contributing
-(Add contribution guidelines here)
+We welcome contributions to Medium MCP Server!
+
+### How to Contribute
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Reporting Issues
+- Use GitHub Issues to report bugs
+- Provide detailed information about the issue
+- Include reproduction steps and error messages
 
 ## License
-(Add license information here)
+Distributed under the MIT License. See `LICENSE` file for more information.
+
+## Contact
+Dishant Raghav - [Your Email or LinkedIn]
+
+Project Link: [https://github.com/Dishant27/medium-mcp-server](https://github.com/Dishant27/medium-mcp-server)
