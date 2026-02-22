@@ -4,8 +4,8 @@ import { config } from 'dotenv';
 config();
 
 class MediumAuth {
-  private clientId: string;
-  private clientSecret: string;
+  private readonly clientId: string;
+  private readonly clientSecret: string;
   private accessToken: string | null = null;
 
   constructor() {
@@ -30,7 +30,7 @@ class MediumAuth {
       // 1. 從 Medium 請求授權碼
       // 2. 將授權碼交換為存取權杖
       // 3. 儲存並刷新存取權杖
-      
+
       // 模擬驗證（請替換為實際的 OAuth 實作）
       this.accessToken = await this.requestAccessToken();
 
@@ -43,7 +43,8 @@ class MediumAuth {
   private async requestAccessToken(): Promise<string> {
     // OAuth 權杖請求的佔位符
     // 您需要在此實作實際的 Medium OAuth 2.0 流程
-    
+    // This will use clientId and clientSecret when real OAuth is implemented
+
     // 用於演示的模擬權杖
     return `medium_token_${Date.now()}`;
   }
@@ -56,14 +57,14 @@ class MediumAuth {
     return this.accessToken;
   }
 
-  private logAuthSuccess() {
+  private logAuthSuccess(): void {
     console.log(`
     ✅ Medium 驗證成功
     🕒 時間戳記: ${new Date().toISOString()}
     `);
   }
 
-  private logSecurityAlert(message: string) {
+  private logSecurityAlert(message: string): void {
     console.error(`
     ⚠️ 安全警示 ⚠️
     訊息: ${message}
@@ -71,9 +72,10 @@ class MediumAuth {
     `);
   }
 
-  private handleAuthenticationFailure(error: any) {
-    this.logSecurityAlert(`驗證失敗: ${error.message}`);
-    throw new Error(`🚫 Medium 驗證失敗: ${error.message}`);
+  private handleAuthenticationFailure(error: unknown): void {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    this.logSecurityAlert(`驗證失敗: ${message}`);
+    throw new Error(`🚫 Medium 驗證失敗: ${message}`);
   }
 }
 
