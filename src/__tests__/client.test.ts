@@ -13,6 +13,7 @@ const MockedAuth = MediumAuth as jest.MockedClass<typeof MediumAuth>;
 describe('MediumClient', () => {
   let client: MediumClient;
   let mockAuth: jest.Mocked<MediumAuth>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAxiosInstance: any;
 
   beforeEach(() => {
@@ -392,16 +393,12 @@ describe('MediumClient', () => {
       const mockResponse = { data: { test: 'data' } };
       mockAxiosInstance.mockResolvedValue(mockResponse);
 
-      const start = Date.now();
-
       // Make multiple rapid requests
       await Promise.all([
         client.getUserProfile(),
         client.getUserProfile(),
         client.getUserProfile(),
       ]);
-
-      const elapsed = Date.now() - start;
 
       // Rate limiting should introduce some delay
       expect(mockAxiosInstance).toHaveBeenCalled();
