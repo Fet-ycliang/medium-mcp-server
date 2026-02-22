@@ -1,44 +1,44 @@
 {
-    "name": "Medium MCP Server Configuration",
+    "name": "Medium MCP 伺服器設定",
     "version": "1.0.0",
-    "description": "Example configuration for integrating Medium MCP Server with LLMs",
+    "description": "整合 Medium MCP 伺服器與 LLM 的範例設定",
     "tools": [
         {
             "name": "publish-article",
-            "description": "Publish a new article on Medium",
+            "description": "在 Medium 上發布新文章",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "title": {
                         "type": "string",
-                        "description": "Title of the article",
+                        "description": "文章標題",
                         "minLength": 5,
                         "maxLength": 100,
                         "examples": [
-                            "The Future of AI",
-                            "Machine Learning Breakthroughs in 2025"
+                            "AI 的未來",
+                            "2025 年機器學習的突破"
                         ]
                     },
                     "content": {
                         "type": "string",
-                        "description": "Markdown content of the article",
+                        "description": "文章的 Markdown 內容",
                         "minLength": 100,
                         "examples": [
-                            "# Introduction to Artificial Intelligence\n\nIn recent years, AI has transformed..."
+                            "# 人工智慧簡介\n\n近年來，AI 已經改變了..."
                         ]
                     },
                     "tags": {
                         "type": "array",
-                        "description": "Tags for the article",
+                        "description": "文章標籤",
                         "items": {"type": "string"},
                         "maxItems": 5,
                         "examples": [
-                            ["technology", "ai", "machine-learning"]
+                            ["科技", "人工智慧", "機器學習"]
                         ]
                     },
                     "publicationId": {
                         "type": "string",
-                        "description": "Optional publication ID for publishing",
+                        "description": "用於發布的選用出版物 ID",
                         "examples": ["publication-xyz"]
                     }
                 },
@@ -47,29 +47,29 @@
         },
         {
             "name": "search-articles",
-            "description": "Search and filter Medium articles",
+            "description": "搜尋和篩選 Medium 文章",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "keywords": {
                         "type": "array",
-                        "description": "Keywords to search for in articles",
+                        "description": "在文章中搜尋的關鍵字",
                         "items": {"type": "string"},
                         "examples": [
-                            ["artificial intelligence", "technology"]
+                            ["人工智慧", "科技"]
                         ]
                     },
                     "tags": {
                         "type": "array",
-                        "description": "Filter articles by tags",
+                        "description": "依標籤篩選文章",
                         "items": {"type": "string"},
                         "examples": [
-                            ["machine-learning", "data-science"]
+                            ["機器學習", "資料科學"]
                         ]
                     },
                     "publicationId": {
                         "type": "string",
-                        "description": "Filter articles by publication",
+                        "description": "依出版物篩選文章",
                         "examples": ["publication-xyz"]
                     }
                 }
@@ -77,13 +77,13 @@
         },
         {
             "name": "get-publications",
-            "description": "Retrieve user's Medium publications",
+            "description": "取得使用者的 Medium 出版物",
             "parameters": {}
         }
     ],
     "usage_guidelines": {
-        "authentication": "Requires valid Medium Developer credentials",
-        "privacy_note": "Respect Medium's terms of service and content guidelines",
-        "rate_limits": "Adhere to Medium API rate limits"
+        "authentication": "需要有效的 Medium 開發者憑證",
+        "privacy_note": "請尊重 Medium 的服務條款和內容指南",
+        "rate_limits": "請遵守 Medium API 的速率限制"
     }
 }

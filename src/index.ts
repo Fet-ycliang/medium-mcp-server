@@ -1,11 +1,11 @@
 import { config } from 'dotenv';
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
 import MediumAuth from './auth';
 import MediumClient from './client';
 
-// Load environment variables
+// 載入環境變數
 config();
 
 class MediumMcpServer {
@@ -14,152 +14,157 @@ class MediumMcpServer {
   private auth: MediumAuth;
 
   constructor() {
-    // Initialize authentication
+    // 初始化驗證
     this.auth = new MediumAuth();
-    
-    // Initialize Medium client
+
+    // 初始化 Medium 客戶端
     this.mediumClient = new MediumClient(this.auth);
 
-    // Create MCP server instance
+    // 建立 MCP 伺服器實例
     this.server = new McpServer({
-      name: "medium-mcp-server",
-      version: "1.0.0"
+      name: 'medium-mcp-server',
+      version: '1.0.0',
     });
 
     this.registerTools();
   }
 
-  private registerTools() {
-    // Tool for publishing articles
+  private registerTools(): void {
+    // 發布文章工具
+    const publishArticleHandler = async (args) => {
+      try {
+        const publishResult = await this.mediumClient.publishArticle({
+          title: args.title,
+          content: args.content,
+          tags: args.tags,
+          publicationId: args.publicationId,
+        });
+
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify(publishResult, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return {
+          isError: true,
+          content: [
+            {
+              type: 'text' as const,
+              text: `發布文章時發生錯誤: ${message}`,
+            },
+          ],
+        };
+      }
+    };
+
     this.server.tool(
-      "publish-article",
-      "Publish a new article on Medium",
+      'publish-article',
+      '在 Medium 上發布新文章',
       {
-        title: z.string().min(1, "Title is required"),
-        content: z.string().min(10, "Content must be at least 10 characters"),
+        title: z.string().min(1, '標題為必填'),
+        content: z.string().min(10, '內容至少需要 10 個字元'),
         tags: z.array(z.string()).optional(),
-        publicationId: z.string().optional()
+        publicationId: z.string().optional(),
       },
-      async (args) => {
-        try {
-          const publishResult = await this.mediumClient.publishArticle({
-            title: args.title,
-            content: args.content,
-            tags: args.tags,
-            publicationId: args.publicationId
-          });
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(publishResult, null, 2)
-              }
-            ]
-          };
-        } catch (error: any) {
-          return {
-            isError: true,
-            content: [
-              {
-                type: "text",
-                text: `Error publishing article: ${error.message}`
-              }
-            ]
-          };
-        }
-      }
+      publishArticleHandler
     );
 
-    // Tool for retrieving user publications
-    this.server.tool(
-      "get-publications",
-      "Retrieve user's publications",
-      {},
-      async () => {
-        try {
-          const publications = await this.mediumClient.getUserPublications();
+    // 取得使用者出版物工具
+    const getPublicationsHandler = async () => {
+      try {
+        const publications = await this.mediumClient.getUserPublications();
 
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(publications, null, 2)
-              }
-            ]
-          };
-        } catch (error: any) {
-          return {
-            isError: true,
-            content: [
-              {
-                type: "text",
-                text: `Error retrieving publications: ${error.message}`
-              }
-            ]
-          };
-        }
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify(publications, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return {
+          isError: true,
+          content: [
+            {
+              type: 'text' as const,
+              text: `取得出版物時發生錯誤: ${message}`,
+            },
+          ],
+        };
       }
-    );
+    };
 
-    // Tool for searching articles
+    this.server.tool('get-publications', '取得使用者的出版物', {}, getPublicationsHandler);
+
+    // 搜尋文章工具
+    const searchArticlesHandler = async (args) => {
+      try {
+        const articles = await this.mediumClient.searchArticles({
+          keywords: args.keywords,
+          publicationId: args.publicationId,
+          tags: args.tags,
+        });
+
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify(articles, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return {
+          isError: true,
+          content: [
+            {
+              type: 'text' as const,
+              text: `搜尋文章時發生錯誤: ${message}`,
+            },
+          ],
+        };
+      }
+    };
+
     this.server.tool(
-      "search-articles",
-      "Search and filter Medium articles",
+      'search-articles',
+      '搜尋和篩選 Medium 文章',
       {
         keywords: z.array(z.string()).optional(),
         publicationId: z.string().optional(),
-        tags: z.array(z.string()).optional()
+        tags: z.array(z.string()).optional(),
       },
-      async (args) => {
-        try {
-          const articles = await this.mediumClient.searchArticles({
-            keywords: args.keywords,
-            publicationId: args.publicationId,
-            tags: args.tags
-          });
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(articles, null, 2)
-              }
-            ]
-          };
-        } catch (error: any) {
-          return {
-            isError: true,
-            content: [
-              {
-                type: "text",
-                text: `Error searching articles: ${error.message}`
-              }
-            ]
-          };
-        }
-      }
+      searchArticlesHandler
     );
   }
 
-  // Method to start the server
-  async start() {
-    // Authenticate first
+  // 啟動伺服器的方法
+  async start(): Promise<void> {
+    // 首先進行驗證
     await this.auth.authenticate();
 
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("🚀 MediumMCP Server Initialized");
+    console.error('🚀 MediumMCP 伺服器已初始化');
   }
 }
 
-// Main execution
-async function main() {
+// 主要執行程式
+async function main(): Promise<void> {
   const server = new MediumMcpServer();
   await server.start();
 }
 
-main().catch(error => {
-  console.error("Fatal error:", error);
+main().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : 'Unknown error';
+  console.error('嚴重錯誤:', message);
   process.exit(1);
 });
