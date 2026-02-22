@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 
-// Load environment variables
+// 載入環境變數
 config();
 
 class MediumAuth {
@@ -9,7 +9,7 @@ class MediumAuth {
   private accessToken: string | null = null;
 
   constructor() {
-    // Validate credentials from environment
+    // 從環境變數驗證憑證
     this.clientId = this.validateCredential('MEDIUM_CLIENT_ID');
     this.clientSecret = this.validateCredential('MEDIUM_CLIENT_SECRET');
   }
@@ -17,21 +17,21 @@ class MediumAuth {
   private validateCredential(key: string): string {
     const value = process.env[key];
     if (!value) {
-      this.logSecurityAlert(`Missing critical credential: ${key}`);
-      throw new Error(`🚨 Security Alert: Missing ${key} in environment variables`);
+      this.logSecurityAlert(`缺少關鍵憑證: ${key}`);
+      throw new Error(`🚨 安全警示: 環境變數中缺少 ${key}`);
     }
     return value;
   }
 
   public async authenticate(): Promise<void> {
     try {
-      // This is a placeholder for actual Medium OAuth flow
-      // In a real implementation, you'd:
-      // 1. Request authorization code from Medium
-      // 2. Exchange authorization code for access token
-      // 3. Store and refresh the access token
+      // 這是實際 Medium OAuth 流程的佔位符
+      // 在實際實作中，您需要：
+      // 1. 從 Medium 請求授權碼
+      // 2. 將授權碼交換為存取權杖
+      // 3. 儲存並刷新存取權杖
       
-      // Simulate authentication (replace with actual OAuth implementation)
+      // 模擬驗證（請替換為實際的 OAuth 實作）
       this.accessToken = await this.requestAccessToken();
 
       this.logAuthSuccess();
@@ -41,39 +41,39 @@ class MediumAuth {
   }
 
   private async requestAccessToken(): Promise<string> {
-    // Placeholder for OAuth token request
-    // You'll need to implement the actual Medium OAuth 2.0 flow here
+    // OAuth 權杖請求的佔位符
+    // 您需要在此實作實際的 Medium OAuth 2.0 流程
     
-    // Simulated token for demo purposes
+    // 用於演示的模擬權杖
     return `medium_token_${Date.now()}`;
   }
 
   public getAccessToken(): string {
     if (!this.accessToken) {
-      this.logSecurityAlert('Unauthorized access token request');
-      throw new Error('🔒 Authentication Required: Call authenticate() first');
+      this.logSecurityAlert('未授權的存取權杖請求');
+      throw new Error('🔒 需要驗證: 請先呼叫 authenticate()');
     }
     return this.accessToken;
   }
 
   private logAuthSuccess() {
     console.log(`
-    ✅ Medium Authentication Successful
-    🕒 Timestamp: ${new Date().toISOString()}
+    ✅ Medium 驗證成功
+    🕒 時間戳記: ${new Date().toISOString()}
     `);
   }
 
   private logSecurityAlert(message: string) {
     console.error(`
-    ⚠️ SECURITY ALERT ⚠️
-    Message: ${message}
-    Timestamp: ${new Date().toISOString()}
+    ⚠️ 安全警示 ⚠️
+    訊息: ${message}
+    時間戳記: ${new Date().toISOString()}
     `);
   }
 
   private handleAuthenticationFailure(error: any) {
-    this.logSecurityAlert(`Authentication Failed: ${error.message}`);
-    throw new Error(`🚫 Medium Authentication Failed: ${error.message}`);
+    this.logSecurityAlert(`驗證失敗: ${error.message}`);
+    throw new Error(`🚫 Medium 驗證失敗: ${error.message}`);
   }
 }
 

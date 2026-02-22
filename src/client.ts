@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MediumAuth from './auth';
 
+// 發布文章參數介面
 interface PublishArticleParams {
   title: string;
   content: string;
@@ -8,6 +9,7 @@ interface PublishArticleParams {
   publicationId?: string;
 }
 
+// 搜尋文章參數介面
 interface SearchArticlesParams {
   keywords?: string[];
   publicationId?: string;
@@ -22,6 +24,7 @@ class MediumClient {
     this.auth = auth;
   }
 
+  // 發送 API 請求的私有方法
   private async makeRequest(method: 'get' | 'post', endpoint: string, data?: any) {
     try {
       const response = await axios({
@@ -36,11 +39,12 @@ class MediumClient {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Medium API Error:', error.response?.data || error.message);
+      console.error('Medium API 錯誤:', error.response?.data || error.message);
       throw error;
     }
   }
 
+  // 發布文章
   async publishArticle(params: PublishArticleParams) {
     return this.makeRequest('post', '/publications', {
       title: params.title,
@@ -51,10 +55,12 @@ class MediumClient {
     });
   }
 
+  // 取得使用者的出版物
   async getUserPublications() {
     return this.makeRequest('get', '/publications');
   }
 
+  // 搜尋文章
   async searchArticles(params: SearchArticlesParams) {
     const queryParams = new URLSearchParams();
     
@@ -77,14 +83,17 @@ class MediumClient {
     return this.makeRequest('get', `/articles?${queryParams.toString()}`);
   }
 
+  // 取得草稿
   async getDrafts() {
     return this.makeRequest('get', '/drafts');
   }
 
+  // 取得使用者個人資料
   async getUserProfile() {
     return this.makeRequest('get', '/me');
   }
 
+  // 建立草稿
   async createDraft(params: { 
     title: string, 
     content: string, 

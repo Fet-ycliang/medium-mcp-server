@@ -5,7 +5,7 @@ import { z } from "zod";
 import MediumAuth from './auth';
 import MediumClient from './client';
 
-// Load environment variables
+// 載入環境變數
 config();
 
 class MediumMcpServer {
@@ -14,13 +14,13 @@ class MediumMcpServer {
   private auth: MediumAuth;
 
   constructor() {
-    // Initialize authentication
+    // 初始化驗證
     this.auth = new MediumAuth();
     
-    // Initialize Medium client
+    // 初始化 Medium 客戶端
     this.mediumClient = new MediumClient(this.auth);
 
-    // Create MCP server instance
+    // 建立 MCP 伺服器實例
     this.server = new McpServer({
       name: "medium-mcp-server",
       version: "1.0.0"
@@ -30,13 +30,13 @@ class MediumMcpServer {
   }
 
   private registerTools() {
-    // Tool for publishing articles
+    // 發布文章工具
     this.server.tool(
       "publish-article",
-      "Publish a new article on Medium",
+      "在 Medium 上發布新文章",
       {
-        title: z.string().min(1, "Title is required"),
-        content: z.string().min(10, "Content must be at least 10 characters"),
+        title: z.string().min(1, "標題為必填"),
+        content: z.string().min(10, "內容至少需要 10 個字元"),
         tags: z.array(z.string()).optional(),
         publicationId: z.string().optional()
       },
@@ -63,7 +63,7 @@ class MediumMcpServer {
             content: [
               {
                 type: "text",
-                text: `Error publishing article: ${error.message}`
+                text: `發布文章時發生錯誤: ${error.message}`
               }
             ]
           };
@@ -71,10 +71,10 @@ class MediumMcpServer {
       }
     );
 
-    // Tool for retrieving user publications
+    // 取得使用者出版物工具
     this.server.tool(
       "get-publications",
-      "Retrieve user's publications",
+      "取得使用者的出版物",
       {},
       async () => {
         try {
@@ -94,7 +94,7 @@ class MediumMcpServer {
             content: [
               {
                 type: "text",
-                text: `Error retrieving publications: ${error.message}`
+                text: `取得出版物時發生錯誤: ${error.message}`
               }
             ]
           };
@@ -102,10 +102,10 @@ class MediumMcpServer {
       }
     );
 
-    // Tool for searching articles
+    // 搜尋文章工具
     this.server.tool(
       "search-articles",
-      "Search and filter Medium articles",
+      "搜尋和篩選 Medium 文章",
       {
         keywords: z.array(z.string()).optional(),
         publicationId: z.string().optional(),
@@ -133,7 +133,7 @@ class MediumMcpServer {
             content: [
               {
                 type: "text",
-                text: `Error searching articles: ${error.message}`
+                text: `搜尋文章時發生錯誤: ${error.message}`
               }
             ]
           };
@@ -142,24 +142,24 @@ class MediumMcpServer {
     );
   }
 
-  // Method to start the server
+  // 啟動伺服器的方法
   async start() {
-    // Authenticate first
+    // 首先進行驗證
     await this.auth.authenticate();
 
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("🚀 MediumMCP Server Initialized");
+    console.error("🚀 MediumMCP 伺服器已初始化");
   }
 }
 
-// Main execution
+// 主要執行程式
 async function main() {
   const server = new MediumMcpServer();
   await server.start();
 }
 
 main().catch(error => {
-  console.error("Fatal error:", error);
+  console.error("嚴重錯誤:", error);
   process.exit(1);
 });
