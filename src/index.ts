@@ -31,7 +31,12 @@ class MediumMcpServer {
 
   private registerTools(): void {
     // 發布文章工具
-    const publishArticleHandler = async (args) => {
+    const publishArticleHandler = async (args: {
+      title: string;
+      content: string;
+      tags?: string[];
+      publicationId?: string;
+    }): Promise<{ content: Array<{ type: 'text'; text: string }>; isError?: boolean }> => {
       try {
         const publishResult = await this.mediumClient.publishArticle({
           title: args.title,
@@ -75,7 +80,10 @@ class MediumMcpServer {
     );
 
     // 取得使用者出版物工具
-    const getPublicationsHandler = async () => {
+    const getPublicationsHandler = async (): Promise<{
+      content: Array<{ type: 'text'; text: string }>;
+      isError?: boolean;
+    }> => {
       try {
         const publications = await this.mediumClient.getUserPublications();
 
@@ -104,7 +112,11 @@ class MediumMcpServer {
     this.server.tool('get-publications', '取得使用者的出版物', {}, getPublicationsHandler);
 
     // 搜尋文章工具
-    const searchArticlesHandler = async (args) => {
+    const searchArticlesHandler = async (args: {
+      keywords?: string[];
+      publicationId?: string;
+      tags?: string[];
+    }): Promise<{ content: Array<{ type: 'text'; text: string }>; isError?: boolean }> => {
       try {
         const articles = await this.mediumClient.searchArticles({
           keywords: args.keywords,
