@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import MediumAuth from './auth';
 import MediumClient from './client';
+import { formatArticleSummary, formatArticleList, ArticleData } from './formatter';
 
 // Load environment variables
 config();
@@ -134,6 +135,55 @@ class MediumMcpServer {
               {
                 type: "text",
                 text: `Error searching articles: ${error.message}`
+              }
+            ]
+          };
+        }
+      }
+    );
+
+    // Tool for formatting article summaries in Traditional Chinese
+    this.server.tool(
+      "format-article-summary",
+      "將文章資訊格式化為繁體中文 Markdown 摘要，包含標題、URL、作者、發佈時間和摘要",
+      {
+        articles: z.array(z.object({
+          title: z.string(),
+          url: z.string(),
+          author: z.string().optional(),
+          publishedAt: z.string().optional(),
+          summary: z.string().optional(),
+          tags: z.array(z.string()).optional()
+        })),
+        format: z.enum(['single', 'list']).default('list').optional()
+      },
+      async (args) => {
+        try {
+          let formattedText: string;
+
+          if (args.format === 'single' && args.articles.length > 0) {
+            // 格式化單篇文章
+            formattedText = formatArticleSummary(args.articles[0]);
+          } else {
+            // 格式化文章列表
+            formattedText = formatArticleList(args.articles);
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: formattedText
+              }
+            ]
+          };
+        } catch (error: any) {
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: `格式化文章時發生錯誤：${error.message}`
               }
             ]
           };

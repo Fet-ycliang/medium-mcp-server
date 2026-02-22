@@ -79,6 +79,69 @@
             "name": "get-publications",
             "description": "Retrieve user's Medium publications",
             "parameters": {}
+        },
+        {
+            "name": "format-article-summary",
+            "description": "將文章資訊格式化為繁體中文 Markdown 摘要，包含標題、URL、作者、發佈時間和摘要",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "articles": {
+                        "type": "array",
+                        "description": "文章資料陣列",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string",
+                                    "description": "文章標題"
+                                },
+                                "url": {
+                                    "type": "string",
+                                    "description": "文章URL"
+                                },
+                                "author": {
+                                    "type": "string",
+                                    "description": "作者名稱（選填）"
+                                },
+                                "publishedAt": {
+                                    "type": "string",
+                                    "description": "發佈時間（選填）"
+                                },
+                                "summary": {
+                                    "type": "string",
+                                    "description": "文章摘要（選填）"
+                                },
+                                "tags": {
+                                    "type": "array",
+                                    "description": "文章標籤（選填）",
+                                    "items": {"type": "string"}
+                                }
+                            },
+                            "required": ["title", "url"]
+                        },
+                        "examples": [
+                            [
+                                {
+                                    "title": "AI 的未來發展",
+                                    "url": "https://medium.com/@user/ai-future-123",
+                                    "author": "張三",
+                                    "publishedAt": "2026-02-22",
+                                    "summary": "探討人工智慧技術的未來趨勢與應用",
+                                    "tags": ["AI", "技術", "未來"]
+                                }
+                            ]
+                        ]
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": ["single", "list"],
+                        "description": "格式化類型：'single' 表示單篇文章，'list' 表示文章列表",
+                        "default": "list"
+                    }
+                },
+                "required": ["articles"]
+            }
         }
     ],
     "usage_guidelines": {

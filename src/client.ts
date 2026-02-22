@@ -14,6 +14,20 @@ interface SearchArticlesParams {
   tags?: string[];
 }
 
+interface ArticleDetails {
+  id: string;
+  title: string;
+  url: string;
+  author?: {
+    id: string;
+    name: string;
+    username: string;
+  };
+  publishedAt?: string;
+  content?: string;
+  tags?: string[];
+}
+
 class MediumClient {
   private auth: MediumAuth;
   private baseUrl = 'https://api.medium.com/v1';
@@ -85,10 +99,10 @@ class MediumClient {
     return this.makeRequest('get', '/me');
   }
 
-  async createDraft(params: { 
-    title: string, 
-    content: string, 
-    tags?: string[] 
+  async createDraft(params: {
+    title: string,
+    content: string,
+    tags?: string[]
   }) {
     return this.makeRequest('post', '/drafts', {
       title: params.title,
@@ -96,6 +110,10 @@ class MediumClient {
       content: params.content,
       tags: params.tags
     });
+  }
+
+  async getArticleDetails(articleId: string): Promise<ArticleDetails> {
+    return this.makeRequest('get', `/articles/${articleId}`);
   }
 }
 
